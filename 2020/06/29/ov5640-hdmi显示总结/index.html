@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="摄像头,ov5640,HDMI,SDRAM," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;博客建起来了，还是得写一些东西，不然白搞了，正好最近完成了一个ov5640-hdmi显示的东西，就写一下弄这个东西中遇到的一些问题吧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ov5640-hdmi显示总结">
+<meta property="og:url" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="小唐的小窝">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;博客建起来了，还是得写一些东西，不然白搞了，正好最近完成了一个ov5640-hdmi显示的东西，就写一下弄这个东西中遇到的一些问题吧。">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/69759328_p0.jpg">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/%E6%80%BB%E4%BD%93%E6%A1%86%E6%9E%B6%E5%9B%BE1-1593408603044.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200629165403544.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200629165850233.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200629170347268.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200629173235119.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/%E5%9B%BE%E7%89%873-1593523003774.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/%E5%9B%BE%E7%89%873.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/HDMI.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200630204504342.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200630224116739.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200630232622479.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/%E6%80%BB%E4%BD%93%E6%A1%86%E6%9E%B6%E5%9B%BE1-1593408603044.png">
+<meta property="article:published_time" content="2020-06-29T05:06:05.000Z">
+<meta property="article:modified_time" content="2020-07-01T04:47:01.386Z">
+<meta property="article:author" content="TangFeng">
+<meta property="article:tag" content="摄像头">
+<meta property="article:tag" content="ov5640">
+<meta property="article:tag" content="HDMI">
+<meta property="article:tag" content="SDRAM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/69759328_p0.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi显示总结/"/>
+
+
+
+
+
+  <title>ov5640-hdmi显示总结 | 小唐的小窝</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小唐的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">认认真真咯</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="TangFeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/01.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小唐的小窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ov5640-hdmi显示总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-29T13:06:05+08:00">
+                2020-06-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-01T12:47:01+08:00">
+                2020-07-01
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%91%84%E5%83%8F%E5%A4%B4/" itemprop="url" rel="index">
+                    <span itemprop="name">摄像头</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%91%84%E5%83%8F%E5%A4%B4/ov5640/" itemprop="url" rel="index">
+                    <span itemprop="name">ov5640</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HDMI/" itemprop="url" rel="index">
+                    <span itemprop="name">HDMI</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SDRAM/" itemprop="url" rel="index">
+                    <span itemprop="name">SDRAM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/" class="leancloud_visitors" data-flag-title="ov5640-hdmi显示总结">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.9k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;博客建起来了，还是得写一些东西，不然白搞了，正好最近完成了一个ov5640-hdmi显示的东西，就写一下弄这个东西中遇到的一些问题吧。</p>
+<p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/69759328_p0.jpg" alt="69759328_p0"></p>
+<a id="more"></a>
+
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>&emsp;&emsp;先大体说一下做这个东西的一些思路。</p>
+<p>&emsp;&emsp;首先是这个东西需要干什么，简单说就是用FPGA驱动OV5640摄像头模块，获取OV5640的视频数据，然后通过HDMI接口将OV5640采集的视频数据显示在显示器上。本次视频分辨率定为1024*768，帧率为30FPS。另外除了需要将视频显示在HDMI显示器上，还需要实现截图功能，但到目前(2020年6月29日)截图功能还没有实现(但是预留了接口)。</p>
+<p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/%E6%80%BB%E4%BD%93%E6%A1%86%E6%9E%B6%E5%9B%BE1-1593408603044.png" alt="总体框架图1"></p>
+<p>&emsp;&emsp;这是本次设计的系统框图。上电等待20ms以上，然后由<code>IIC_Config</code>模块配置ov5640，将一大串寄存器数据写入到OV5640中，然后OV5640便会输出对应分辨率的视频数据，然后<code>Get Frame</code>模块则负责读取这些数据，并将其写入到<code>FIFO 1</code>中，<code>FIFO 1</code>是一个由内部Block RAM构成的异步FIFO，用于两个时钟域的数据传递，并为写SDRAM提供一个缓冲，因为SDRAM不一定是想写，就立马能够写的。<code>Frame write</code>模块则读取来自<code>FIFO 1</code>中的数据，将其写入到SDRAM，而<code>AVL Bus Controller</code>是一个总线控制器，负责将SDRAM转换成一个多端口、宏观上读写可以同时进行的存储器，总线仲裁采用轮询仲裁。<code>Frame read</code>模块负责从SDRAM中读数据，然后将读到的数据写入到<code>FIFO 2</code>中，<code>FIFO 2</code>的作用也主要是为了实现跨时钟域传递数据，另外提供一个缓冲作用。RGB2VGA主要是负责生成行、场同步信号和数据有效信号de，然后将这些信号连同数据一起送往<code>HDMI Controller</code>完成显示。</p>
+<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><p>&emsp;&emsp;遇到的问题得找到解决办法然后记下来。</p>
+<ul>
+<li><p>通过SCCB总线配置OV5640时，需要提供xclk，否则OV5640不会响应SCCB总线的读写请求。如果摄像头模块上自带晶振，则用晶振提供就好了，如果没有则需要使用FPGA提供时钟。最开始受以前一些相对简单的芯片的IIC总线的影响，以为不需要提供时钟，然后折腾了大半天，我给到摄像头的时序和Demo的时序一模一样，可是我的就是读不出ID，没有应答信号，最后才发现是xclk的问题。想想也应该，以前哪些简单点的芯片总共就几个寄存器，但是ov5640那么多寄存器，里面还有mcu，那sccb控制器就可以看作一个外设挂在ov5640内部的总线上，那自然也要时钟了。</p>
+</li>
+<li><p>OV5640的SCCB总线会发出应答信号，SCCB总线规范上说不用在意应答信号，但是实测OV5640的SCCB总线是有应答信号的。也就是说，除了不能(没有实测过)突发读写，其它时序都和IIC一模一样。</p>
+</li>
+<li><p>OV5640的寄存器地址有16位，写寄存器地址时序可以参考下面的时序图。这是AT24C1024的写数据时序图，和SCCB的写时序一样，读时序类推即可。</p>
+<p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200629165403544.png" alt="image-20200629165403544"></p>
+</li>
+<li><p>SDRAM页突发读/写配合<code>BURST TERMINATE</code>命令可以实现可变突发长度，但是页突发读/写<font color="red">不支持</font>自动预充电。</p>
+<p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200629165850233.png" alt="image-20200629165850233"></p>
+</li>
+<li><p>对于DMT时序，这个<code>HSync</code>和<code>VSync</code>一直都是周期重复的，尤其是<code>HSync</code>，而不是<code>VSync</code>不处于<code>Addr Time</code>时，<code>HSync</code>信号就没有了，如果是这样，显示器会没有画面。</p>
+<p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200629170347268.png" alt="image-20200629170347268"></p>
+</li>
+<li><p>SDRAM的潜伏期一般可以是2或者3，这个潜伏期的选择和SDRAM芯片的工作频率有关，频率很高的话就得让潜伏期为3，频率低就可以设置为2，以提高读写速度。下图是H57V2562GTR 潜伏期与时钟周期的关系。</p>
+</li>
+<li><p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200629173235119.png" alt="image-20200629173235119"></p>
+</li>
+</ul>
+<h1 id="各个模块"><a href="#各个模块" class="headerlink" title="各个模块"></a>各个模块</h1><h2 id="HDMI"><a href="#HDMI" class="headerlink" title="HDMI"></a>HDMI</h2><p>&emsp;&emsp;<strong>HDMI(High-Definition Multimedia Interface ，高清晰度多媒体接口)</strong>，用于传输视频和音频。</p>
+<p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/%E5%9B%BE%E7%89%873-1593523003774.png" alt="图片3"></p>
+<center>VGA场同步时序</center>
+
+<p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/%E5%9B%BE%E7%89%873.png" alt="图片3"></p>
+<center>VGA行同步时序</center>
+
+<p>&emsp;&emsp;首先回想VGA显示，VGA时序主要需要行场同步信号信号和RGB数据信号，这些信号由FPGA实现的VGA驱动产生，然后通过FPGA外围的DAC或者权电阻网络将RGB数字信号转换为模拟信号传输，VGA时序图如上。</p>
+<p>&emsp;&emsp;如果只需显示图像，则HDMI和VGA类似，只不过产生行场同步信号/数据信号后，不由外部权电阻网络转换成模拟电压，而是由编码器通过TMDS编码算法将这些信号编码后，再通过串行化器将数字信号通过差分数据线发送给显示器。</p>
+<p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/HDMI.png" alt="HDMI"></p>
+<p>&emsp;&emsp;上图便是HDMI控制器的结构图(没有包含时序发生部分)，主要包含编码器和串行化器。而前面没有画出的时序发生部分和VGA的时序发生部分非常相似(或者完全一样？)，只是多了一个<code>de</code>信号，这个<code>de</code>信号在像素数据有效的时候为高，像素数据无效的时候为低。</p>
+<p>&emsp;&emsp;编码器的编码算法在HDMI的规范文档上给出了，但是它给出的不包含行场同步信号的处理，所以不完整，而DVI得编码算法流程图和HDMI的一样，所以可以在DVI的规范文档里面找到完整的编码流程图。完整的编码流程图如下图所示。</p>
+<p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200630204504342.png" alt="image-20200630204504342"></p>
+<p>&emsp;&emsp;编码器在编码的时候可以采用流水线的方法提高编码器最高运行速度，流水线级数也可以任意长，但是要求平均每个时钟能完成一次编码，即每个像素时钟都可以输出一个编码结果。</p>
+<p>&emsp;&emsp;编码器将视频流数据编码成3组10bit数据，然后串行化器将这10bit数据发送出去，由于每个像素时钟周期都要完成3组10bit的数据的发送，所以串行数据率是像素时钟的10倍，这个频率就比较高了，所以串行化器一般使用FPGA提供的双数据率IO(DDIO)，或者FPGA提供的串行化IP核，双数据率IO在每个时钟上升沿核下降沿都会发送数据，所以串行化器的工作频率就可以从原来的10倍像素时钟降到5倍像素时钟。</p>
+<h2 id="SDRAM"><a href="#SDRAM" class="headerlink" title="SDRAM"></a>SDRAM</h2><p>&emsp;&emsp;SDRAM用于缓存数据帧，由于摄像头给出的、HDMI需要的数据都是大量的、实时的数据，且两者的数据率不一样，所以需要用SDRAM将摄像头给出的数据帧缓存起来，HDMI控制器再从SDRAM控制器中读取数据显示处理。</p>
+<p>&emsp;&emsp;本次将SDRAM的操作封装成了一个遵循 AVL总线从机标准的存储器设备，avl总线是做毕设RISC-V CPU时自定义的一个总线标准，虽然现在发现有些问题，但这里还是能用。这个时序标准参考了avalon总线和蜂鸟E200 CPU里面的ICB总线。通过这个时序，能随机读写SDRAM任意位置的数据，且支持突发长度为1-256的突发读/写(这个总线是32bit的，所以对应到SDRAM就是长度为2-512的突发读写)。</p>
+<p>&emsp;&emsp;SDRAM网上资料很多，这里主要想说的就是关于SDRAM时钟该怎么给。这里先定义两个符号：<code>clk</code>和<code>sdram_clk</code>，<code>clk</code>为SDRAM控制器的时钟，<code>sdram_clk</code>为给到SDRAM芯片的时钟。由于SDRAM各个信号的建立时间和保持时间都比较长，所以像FPGA操作内部SRAM时，数据跳变与时钟对齐这样的方法肯定是不行的，保持时间会出问题。正点原子还有Quartus的一篇官方文档<strong>《Quartus II Handbook Version 8.1 Volume 5: Embedded Peripherals》</strong>都是通过PLL给的，通过PLL将给到SDRAM的时钟移相，即让<code>clk</code>和<code>sdram_clk</code>保持一个相位差，这样也可以，我用的方法则是将给到SDRAM控制器的时钟反相后给到SDRAM，即<code>assign sdram_clk = ~clk;</code>这样做的话就相当于SDRAM控制器上升沿给数据/命令到SDRAM，SDRAM在SDRAM时钟的上升沿(即SDRAM控制器的下降沿)接收数据，那这样在SDRAM时钟的上升沿正好处于数据/命令稳定时的中间位置，我用的SDRAM时钟周期最低是7.6ns，则SDRAM时钟上升沿前后最少都有3.8ns的时间，这个时间可以满足我用的SDRAM所需要的1.5ns的建立时间、0.8ns的保持时间。所以发送给SDRAM的数据是没问题的，主要是接收SDRAM返回的数据看有没有问题。</p>
+<p>&emsp;&emsp;接收SDRAM反馈的数据时也需要特殊处理，我用了一个16bit的寄存器在<code>clk</code>的下降沿(即<code>sdram_clk</code>的上升沿)去采样SDRAM芯片的数据，然后SDRAM内部在<code>clk</code>上升沿的时候去读取这个寄存器的数据以间接的到SDRAM的数据。这样做实践上是可行的。</p>
+<p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200630224116739.png" alt="image-20200630224116739"></p>
+<p>&emsp;&emsp;如上图，SDRAM返回的数据从T1(CL==2时)或T2(CL==3时)上升沿时开始准备出来，经过t<sub>AC</sub>后，数据变得可读，然后在下一个时钟周期的下降沿消失。所以我们需要判断的，就是在T2(CL==2时)或T3(CL==3时)上升沿时，数据是否可读，查看数据手册，我用的SDRAM芯片的t<sub>AC</sub>在CL==2或CLK==3时均小于最小SDRAM时钟周期的7.6ns，所以在SDRAM的上升沿可以读取到SDRAM返回的数据，所以前面反相的方法是可行的。</p>
+<p>&emsp;&emsp;这样做的好处就是可以省一个PLL，并且减少代码的依赖性。</p>
+<h2 id="OV5640"><a href="#OV5640" class="headerlink" title="OV5640"></a>OV5640</h2><p>&emsp;&emsp;OV5640本次涉及的主要就两块：通过SCCB总线配置内部寄存器数据、将OV5640 DVP接口传过来的数据转换成16bit RGB565数据。</p>
+<h3 id="SCCB"><a href="#SCCB" class="headerlink" title="SCCB"></a>SCCB</h3><p>&emsp;&emsp;<strong>Omnivision serial camera control bus</strong>，其实就是IIC总线的一个子集，用于读写OV5640内部的寄存器。</p>
+<h3 id="DVP接口"><a href="#DVP接口" class="headerlink" title="DVP接口"></a>DVP接口</h3><p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/image-20200630232622479.png" alt="image-20200630232622479"></p>
+<p>&emsp;&emsp;时序和DMT时序标准定义的实习比较像，这个HREF就是DE信号，所有的数据通过OV5640输出的时钟<code>pclk</code>来同步，传递RGB565数据时，在HREF有效器件，每个<code>pclk</code>传递一个字节的数据，两个<code>pclk</code>时钟周期传递一个像素点数据。</p>
+<p>&emsp;&emsp;关于寄存器配置，还只看了个大概，等过些天详细看一下、尝试一下后补上。</p>
+<h1 id="整体设计"><a href="#整体设计" class="headerlink" title="整体设计"></a>整体设计</h1><p><img src="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/%E6%80%BB%E4%BD%93%E6%A1%86%E6%9E%B6%E5%9B%BE1-1593408603044.png" alt="总体框架图1"></p>
+<p>&emsp;&emsp;再一次摆上系统框图。</p>
+<p>&emsp;&emsp;主要说我认为的、一些容易出问题的地方。</p>
+<h2 id="多口SDRAM"><a href="#多口SDRAM" class="headerlink" title="多口SDRAM"></a>多口SDRAM</h2><p>&emsp;&emsp;SDRAM只有一个读写接口，同一时刻只能完成读或者写操作，而摄像头和HDMI控制器需要同时读写数据，如果需要截图，则会有3个地方需要同时操作SDRAM，所以需要对SDRAM的操作请求做一个调度，由于前面将SDRAM控制器封装成了一个符合AVL从机时序的存储器设备，所以可以通过AVL总线控制器将SDRAM扩展成一个多口的SDRAM，AVL总线控制器是毕设时弄的一个总线控制器，这个总线控制器可以支持主机、从机数量配置，支持固定优先级和轮询调度，具体实现可以看这里：<a href="https://www.xiaobaidreamworks.com/2020/06/30/avl%E6%80%BB%E7%BA%BF%E6%A0%87%E5%87%86%E5%8F%8A%E6%80%BB%E7%BA%BF%E6%8E%A7%E5%88%B6%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1/">avl总线标准及总线控制器的设计</a>。如果不想自己写总线控制器，也可以将SDRAM的操作封装成符合Avalon总线从机标准的存储器设备，然后用Qsys(也就是新版Quartus II里面的Platform Designer)提供的Avalon总线控制器进行扩展，当然这样也比较麻烦，每次修改代码都需要重新用Qsys生成，然后才能综合。另外也可以直接将SDRAM的操作封装成一个多口SDRAM，各个端口的操作请求由SDRAM控制器来调度，这样也可以，但是缺点就是灵活性不够。</p>
+<h2 id="OV5640与SDRAM、HDMI与SDRAM之间的数据同步问题"><a href="#OV5640与SDRAM、HDMI与SDRAM之间的数据同步问题" class="headerlink" title="OV5640与SDRAM、HDMI与SDRAM之间的数据同步问题"></a>OV5640与SDRAM、HDMI与SDRAM之间的数据同步问题</h2><p>&emsp;&emsp;由于多个端口都可以同时访问SDRAM，导致每个端口在发出读请求后，获得返回数据的时间是不确定的，然而HDMI的行场同步信号是固定的、周期的，所以怎么才能让<code>FIFO 2</code>读端口的数据正好和HDMI的行场同步信号匹配？另外摄像头给出的数据也是周期的，怎么才能让数据写道SDRAM中正确的位置？</p>
+<p>&emsp;&emsp;最开始想的是将行场同步信号信号写入到FIFO，但这样会导致FIFO利用率大大下降。最后用的方法是利用摄像头和RGB2VGA的场同步信号进行同步，每当场同步信号有效时，对两个FIFO、读地址、写地址均进行重置，这样每帧数据均会进行一次同步，而行同步信号结束有效后，一般会有十几行、几十行的时间，这个时间来作为第一行图像数据的读取时间已经绰绰有余，然后利用HDMI的<code>de</code>信号作为FIFO2的读反馈信号，这样便可以保证HDMI端的数据与行场同步信号保持同步。</p>
+<h2 id="单缓冲、双缓冲、三缓冲之间的区别"><a href="#单缓冲、双缓冲、三缓冲之间的区别" class="headerlink" title="单缓冲、双缓冲、三缓冲之间的区别"></a>单缓冲、双缓冲、三缓冲之间的区别</h2><p>&emsp;&emsp;单缓冲就是只用一个缓冲区来缓存图像数据，摄像头往里面写数据，HDMI从里面读数据，这样能行，但是由于摄像头写数据需要时间，可能刚写完半帧数据，然后HDMI就去读，然后读到的数据是上一帧和当前帧混合的数据，即上半帧是当前帧，下半帧是上一帧，当画面变化比较大时，这样会出现明显的撕裂效果，但这样也不是没有好处，好处就是延时减少了，如果帧率不高的话，这样能让画面的响应的时间明显提高。</p>
+<p>&emsp;&emsp;双缓冲则是用两个缓冲区缓冲图像数据，当一个缓冲区接受摄像头写入的数据时，另一个缓冲区用于供HDMI读取数据显示，这样HDMI显示的永远是一个完整的帧数据，不会出现画面撕裂效果，但这样会增加一帧的延时，并且当摄像头和HDMI两者之间的速度有略微差别时，会导致帧率明显下降。比如当摄像头帧率比HMDI帧率高一点，当摄像头写完一帧准备读第二帧时，HDMI还没有显示完第一帧，则摄像头就得将第二帧丢弃掉，反之，当HDMI帧率比摄像头高一点时，当HDMI显示完一帧，准备显示第二帧时，却发现摄像头还没有写完第二帧，所以HDMI就不得不再显示一遍第一帧，这两者情况都会导致帧率的下降。</p>
+<p>&emsp;&emsp;三缓冲则是为了缓解这个问题，三缓冲利用3个缓冲区来缓冲图像，这样第三个缓冲区就可以再速度存在差异的时候用于缓存一下额外的数据，避免数据丢掉。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    TangFeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/" title="ov5640-hdmi显示总结">https://www.xiaobaidreamworks.com/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%91%84%E5%83%8F%E5%A4%B4/" rel="tag"># 摄像头</a>
+          
+            <a href="/tags/ov5640/" rel="tag"># ov5640</a>
+          
+            <a href="/tags/HDMI/" rel="tag"># HDMI</a>
+          
+            <a href="/tags/SDRAM/" rel="tag"># SDRAM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/21/%E4%B8%80%E7%BB%84%E5%A5%BD%E7%9C%8B%E7%9A%84%E5%9B%BE-1/" rel="next" title="一组好看的图-1">
+                <i class="fa fa-chevron-left"></i> 一组好看的图-1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/30/avl%E6%80%BB%E7%BA%BF%E6%A0%87%E5%87%86%E5%8F%8A%E6%80%BB%E7%BA%BF%E6%8E%A7%E5%88%B6%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1/" rel="prev" title="avl总线标准及总线控制器的设计">
+                avl总线标准及总线控制器的设计 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/01.png"
+                alt="TangFeng" />
+            
+              <p class="site-author-name" itemprop="name">TangFeng</p>
+              <p class="site-description motion-element" itemprop="description">做一颗星星，发出自己的光</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ARF1939261764" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                别处再看看吧
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://fabian4.gitee.io" title="小丁的个人博客" target="_blank">小丁的个人博客</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.alxawatcher.cn" title="西西的个人博客" target="_blank">西西的个人博客</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#遇到的问题"><span class="nav-number">2.</span> <span class="nav-text">遇到的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#各个模块"><span class="nav-number">3.</span> <span class="nav-text">各个模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HDMI"><span class="nav-number">3.1.</span> <span class="nav-text">HDMI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SDRAM"><span class="nav-number">3.2.</span> <span class="nav-text">SDRAM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OV5640"><span class="nav-number">3.3.</span> <span class="nav-text">OV5640</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SCCB"><span class="nav-number">3.3.1.</span> <span class="nav-text">SCCB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DVP接口"><span class="nav-number">3.3.2.</span> <span class="nav-text">DVP接口</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整体设计"><span class="nav-number">4.</span> <span class="nav-text">整体设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多口SDRAM"><span class="nav-number">4.1.</span> <span class="nav-text">多口SDRAM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OV5640与SDRAM、HDMI与SDRAM之间的数据同步问题"><span class="nav-number">4.2.</span> <span class="nav-text">OV5640与SDRAM、HDMI与SDRAM之间的数据同步问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单缓冲、双缓冲、三缓冲之间的区别"><span class="nav-number">4.3.</span> <span class="nav-text">单缓冲、双缓冲、三缓冲之间的区别</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">TangFeng</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">12.6k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'QxbMTAK28kbaBY3dBWr9ujmt-gzGzoHsz',
+        appKey: 'KeSGJG38hc1QIDBA0W3noqbD',
+        placeholder: '留下你的想法',
+        avatar:'mp',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("QxbMTAK28kbaBY3dBWr9ujmt-gzGzoHsz", "KeSGJG38hc1QIDBA0W3noqbD");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

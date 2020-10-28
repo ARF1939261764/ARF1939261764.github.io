@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ZYNQ,FPGA," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;用ZYNQ的BSP初始化中断时感觉有点绕，这里以MIO中断初始化为例，分析一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ZYNQ中断初始化程序分析">
+<meta property="og:url" content="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="小唐的小窝">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;用ZYNQ的BSP初始化中断时感觉有点绕，这里以MIO中断初始化为例，分析一下。">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/39578544_p36.jpg">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201019004256499.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201019235811930.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201023000604612.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201022233105379.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201022233411273.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201022233506439.png">
+<meta property="article:published_time" content="2020-10-18T11:59:20.000Z">
+<meta property="article:modified_time" content="2020-10-28T14:20:41.922Z">
+<meta property="article:author" content="TangFeng">
+<meta property="article:tag" content="ZYNQ">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/39578544_p36.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ中断初始化程序分析/"/>
+
+
+
+
+
+  <title>ZYNQ中断初始化程序分析 | 小唐的小窝</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小唐的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">认认真真咯</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="TangFeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/01.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小唐的小窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ZYNQ中断初始化程序分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-18T19:59:20+08:00">
+                2020-10-18
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-28T22:20:41+08:00">
+                2020-10-28
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA/ZYNQ/" itemprop="url" rel="index">
+                    <span itemprop="name">ZYNQ</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/" class="leancloud_visitors" data-flag-title="ZYNQ中断初始化程序分析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.5k
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;用ZYNQ的BSP初始化中断时感觉有点绕，这里以MIO中断初始化为例，分析一下。</p>
+<p><img src="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/39578544_p36.jpg" alt="39578544_p36"></p>
+<a id="more"></a>
+
+<h1 id="整体代码"><a href="#整体代码" class="headerlink" title="整体代码"></a>整体代码</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"platform.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xil_printf.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xparameters.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xgpiops.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"sleep.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xscugic.h"</span></span></span><br><span class="line"></span><br><span class="line">XGpioPs Gpio;</span><br><span class="line">XScuGic intc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uint8_t</span> key_press;</span><br><span class="line"><span class="comment">/***********************************************************************************</span></span><br><span class="line"><span class="comment"> 中断处理函数</span></span><br><span class="line"><span class="comment"> **********************************************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">intr_handler</span><span class="params">(<span class="keyword">void</span> *callback_ref)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  XGpioPs *gpio = (XGpioPs *) callback_ref;</span><br><span class="line">  <span class="keyword">if</span> (XGpioPs_IntrGetStatusPin(gpio, <span class="number">11</span>))</span><br><span class="line">  &#123;</span><br><span class="line">    XGpioPs_IntrClearPin(&amp;Gpio, <span class="number">11</span>);</span><br><span class="line">    key_press = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/***********************************************************************************</span></span><br><span class="line"><span class="comment">中断初始化函数</span></span><br><span class="line"><span class="comment"> **********************************************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">setup_interrupt_system</span><span class="params">(XScuGic *gic_ins_ptr,XGpioPs *gpio,<span class="keyword">uint16_t</span> GpioIntrId)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  XScuGic_Config *IntcConfig;</span><br><span class="line">  IntcConfig = XScuGic_LookupConfig(XPAR_SCUGIC_SINGLE_DEVICE_ID);                         <span class="comment">/*获取中断控制器和中断分配器的基地址*/</span></span><br><span class="line">  XScuGic_CfgInitialize(gic_ins_ptr,IntcConfig,IntcConfig-&gt;CpuBaseAddress);                <span class="comment">/*设置默认中断处理函数,关闭Gic,初始化中断分配器*/</span></span><br><span class="line">  Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,\</span><br><span class="line">                               (Xil_ExceptionHandler)XScuGic_InterruptHandler,gic_ins_ptr);<span class="comment">/*设置IRQ的中断处理函数*/</span></span><br><span class="line">  Xil_ExceptionEnable();                                                                   <span class="comment">/*IRQ使能(通过清除ARM7的CPSR的IRQ中断屏蔽位)*/</span></span><br><span class="line">  XScuGic_Connect(gic_ins_ptr,GpioIntrId,(Xil_ExceptionHandler)intr_handler,(<span class="keyword">void</span> *)gpio); <span class="comment">/*设置GPIO中断处理函数*/</span></span><br><span class="line">  XScuGic_Enable(gic_ins_ptr, GpioIntrId);                                                 <span class="comment">/*使能Gic*/</span></span><br><span class="line">  XGpioPs_SetIntrTypePin(gpio, <span class="number">11</span>, XGPIOPS_IRQ_TYPE_EDGE_FALLING);                         <span class="comment">/*中断触发类型*/</span></span><br><span class="line">  XGpioPs_IntrEnablePin(gpio, <span class="number">11</span>);                                                         <span class="comment">/*使能GPIO11的中断功能*/</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/***********************************************************************************</span></span><br><span class="line"><span class="comment">main函数</span></span><br><span class="line"><span class="comment"> **********************************************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  XGpioPs_Config *ConfigPtr;</span><br><span class="line">  ConfigPtr = XGpioPs_LookupConfig(XPAR_XGPIOPS_0_DEVICE_ID);  <span class="comment">/*获取GPIO外设的基地址*/</span></span><br><span class="line">  XGpioPs_CfgInitialize(&amp;Gpio, ConfigPtr,ConfigPtr-&gt;BaseAddr); <span class="comment">/*初始化XGpioPs结构体,关闭所有GPIO中断*/</span></span><br><span class="line">  XGpioPs_SetDirectionPin(&amp;Gpio,<span class="number">11</span>,<span class="number">0</span>);                         <span class="comment">/*将GPIO的11脚设为输入*/</span></span><br><span class="line">  setup_interrupt_system(&amp;intc,&amp;Gpio,XPAR_XGPIOPS_0_INTR);     <span class="comment">/*设置中断*/</span></span><br><span class="line">  <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span>(key_press)</span><br><span class="line">    &#123;</span><br><span class="line">      key_press = <span class="number">0</span>;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"key press\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><h2 id="GPIO初始化"><a href="#GPIO初始化" class="headerlink" title="GPIO初始化"></a>GPIO初始化</h2><p>&emsp;&emsp;既然是GPIO输入中断，那配置GPIO必然是少不了的，以前弄STM32时的流程就是打开GPIO时钟，然后设置GPIO为输入模式，ZYNQ不需要单独为某个外设打开时钟，所以只需要将指定的IO配置为输入即可。代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">XGpioPs_Config *ConfigPtr;</span><br><span class="line">ConfigPtr = XGpioPs_LookupConfig(XPAR_XGPIOPS_0_DEVICE_ID);  <span class="comment">/*获取GPIO外设的基地址*/</span></span><br><span class="line">XGpioPs_CfgInitialize(&amp;Gpio, ConfigPtr,ConfigPtr-&gt;BaseAddr); <span class="comment">/*初始化XGpioPs结构体,关闭所有GPIO中断*/</span></span><br><span class="line">XGpioPs_SetDirectionPin(&amp;Gpio,<span class="number">11</span>,<span class="number">0</span>);                         <span class="comment">/*将GPIO的11脚设为输入*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="XGpioPs-Config结构体"><a href="#XGpioPs-Config结构体" class="headerlink" title="XGpioPs_Config结构体"></a>XGpioPs_Config结构体</h3><p>XGpioPs_Config定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*xgpiops.h*/</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  u16 DeviceId;		<span class="comment">/**&lt; Unique ID of device */</span></span><br><span class="line">  u32 BaseAddr;		<span class="comment">/**&lt; Register base address */</span></span><br><span class="line">&#125; XGpioPs_Config;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;用于存放设备ID和设备的基地址，这个设备在这里就是指GPIO外设。</p>
+<h3 id="XGpioPs-LookupConfig函数"><a href="#XGpioPs-LookupConfig函数" class="headerlink" title="XGpioPs_LookupConfig函数"></a>XGpioPs_LookupConfig函数</h3><p>XGpioPs_LookupConfig函数如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*xgpiops_sinit.c*/</span></span><br><span class="line"><span class="function">XGpioPs_Config *<span class="title">XGpioPs_LookupConfig</span><span class="params">(u16 DeviceId)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  XGpioPs_Config *CfgPtr = <span class="literal">NULL</span>;</span><br><span class="line">  u32 Index;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (Index = <span class="number">0U</span>; Index &lt; (u32)XPAR_XGPIOPS_NUM_INSTANCES; Index++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (XGpioPs_ConfigTable[Index].DeviceId == DeviceId) &#123;</span><br><span class="line">      CfgPtr = &amp;XGpioPs_ConfigTable[Index];</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (XGpioPs_Config *)CfgPtr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这个函数根据设备ID在<code>XGpioPs_ConfigTable</code>中查找存放设备基地址的结构体。</p>
+<p>&emsp;&emsp;函数中用一个for循环遍历数组<code>XGpioPs_ConfigTable</code>，当查找到指定设备ID时，退出for循环，返回查找结果。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">XGpioPs_Config XGpioPs_ConfigTable[XPAR_XGPIOPS_NUM_INSTANCES] =</span><br><span class="line">&#123;</span><br><span class="line">  &#123;</span><br><span class="line">    XPAR_PS7_GPIO_0_DEVICE_ID,</span><br><span class="line">    XPAR_PS7_GPIO_0_BASEADDR</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;<code>XGpioPs_ConfigTable</code>定义如上，每个数组元素存放一个设备的设备ID和设备基地址。</p>
+<h3 id="XGpioPs-CfgInitialize函数"><a href="#XGpioPs-CfgInitialize函数" class="headerlink" title="XGpioPs_CfgInitialize函数"></a>XGpioPs_CfgInitialize函数</h3><p>&emsp;&emsp;XGpioPs_CfgInitialize函数比较长，就不整个贴出来了，下面分块来分析。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">s32 <span class="title">XGpioPs_CfgInitialize</span><span class="params">(XGpioPs *InstancePtr, <span class="keyword">const</span> XGpioPs_Config *ConfigPtr,u32 EffectiveAddr)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;XGpioPs_CfgInitialize函数原型如上，其功能主要是为了初始化一个XGpioPs结构体变量，将硬件外设与XGpioPs结构体变量联系起来，并关闭所有GPIO的中断功能。XGpioPs结构体定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  XGpioPs_Config GpioConfig;	<span class="comment">/**&lt; Device configuration */</span></span><br><span class="line">  u32 IsReady;			    <span class="comment">/**&lt; Device is initialized and ready */</span></span><br><span class="line">  XGpioPs_Handler Handler;	<span class="comment">/**&lt; Status handlers for all banks */</span></span><br><span class="line">  <span class="keyword">void</span> *CallBackRef; 		    <span class="comment">/**&lt; Callback ref for bank handlers */</span></span><br><span class="line">  u32 Platform;			    <span class="comment">/**&lt; Platform data */</span></span><br><span class="line">  u32 MaxPinNum;			    <span class="comment">/**&lt; Max pins in the GPIO device */</span></span><br><span class="line">  u8 MaxBanks;			    <span class="comment">/**&lt; Max banks in a GPIO device */</span></span><br><span class="line">    u32 PmcGpio;                <span class="comment">/**&lt; Flag for accessing PS GPIO for versal*/</span></span><br><span class="line">&#125; XGpioPs;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>XGpioPs_Config GpioConfig</code>：存放设备信息(设备ID，设备基地址)。</li>
+<li><code>u32 IsReady</code>：设备初始化就绪标志，在XGpioPs_CfgInitialize执行开始时，该变量被清零，执行即将结束时，被置位。</li>
+<li><code>XGpioPs_Handler Handler</code>：状态处理函数？。。不知道是做啥的。</li>
+<li><code>void *CallBackRef</code>：前面状态处理函数的参数。</li>
+<li><code>u32 Platform</code>：平台信息，区分硬件平台(<code>XPLAT_MICROBLAZE</code>,<code>XPLAT_ZYNQ</code>,<code>XPLAT_ZYNQ_ULTRA_MP</code>)。</li>
+<li><code>u32 MaxPinNum</code>：最大IO数量。</li>
+<li><code>u8 MaxBanks</code>：最大Bank数量。</li>
+<li><code>u32 PmcGpio</code>：不知道啥意思，代码中没有初始化这变量。</li>
+</ul>
+<p><strong>初始化结构体</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Set some default values for instance data, don't indicate the device</span></span><br><span class="line"><span class="comment"> * is ready to use until everything has been initialized successfully.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">InstancePtr-&gt;IsReady = <span class="number">0U</span>;</span><br><span class="line">InstancePtr-&gt;GpioConfig.BaseAddr = EffectiveAddr;</span><br><span class="line">InstancePtr-&gt;GpioConfig.DeviceId = ConfigPtr-&gt;DeviceId;</span><br><span class="line">InstancePtr-&gt;Handler = (XGpioPs_Handler)StubHandler;</span><br><span class="line">InstancePtr-&gt;Platform = XGetPlatform_Info();</span><br><span class="line"><span class="comment">/* Initialize the Bank data based on platform */</span></span><br><span class="line"><span class="keyword">if</span> (InstancePtr-&gt;Platform == (u32)XPLAT_ZYNQ_ULTRA_MP) &#123;</span><br><span class="line">    <span class="comment">/*do something*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (InstancePtr-&gt;Platform == (u32)XPLAT_versal)</span><br><span class="line">&#123;</span><br><span class="line">     <span class="keyword">if</span>(InstancePtr-&gt;PmcGpio == (u32)FALSE)</span><br><span class="line">     &#123;</span><br><span class="line">         </span><br><span class="line">         <span class="comment">/*do something*/</span></span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">else</span></span><br><span class="line">     &#123;</span><br><span class="line">         <span class="comment">/*do something*/</span></span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     *	Max pins in the GPIO device</span></span><br><span class="line"><span class="comment">     *	0 - 31,  Bank 0</span></span><br><span class="line"><span class="comment">     *	32 - 53, Bank 1</span></span><br><span class="line"><span class="comment">     *	54 - 85, Bank 2</span></span><br><span class="line"><span class="comment">     *	86 - 117, Bank 3</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    InstancePtr-&gt;MaxPinNum = (u32)<span class="number">118</span>;</span><br><span class="line">    InstancePtr-&gt;MaxBanks = (u8)<span class="number">4</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;结构体初始化代码如上，注意<code>XGetPlatform_Info()</code>函数，通过这个函数，我们在ZYNQ7020上得到的结果是<code>XPLAT_ZYNQ</code>，所以在最后<code>MaxPinNum</code>和<code>MaxBanks</code>分别被初始化为118和4，即表示GPIO数量最大为118，Bank数量最大为4，这与实际情况相符。</p>
+<p><strong>关闭中断</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (i=(u8)<span class="number">0U</span>;i&lt;InstancePtr-&gt;MaxBanks;i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (InstancePtr-&gt;Platform == XPLAT_versal)&#123;</span><br><span class="line">          <span class="comment">/*do something*/</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">          <span class="comment">/*znyq*/</span></span><br><span class="line">          XGpioPs_WriteReg(InstancePtr-&gt;GpioConfig.BaseAddr,((u32)(i) * XGPIOPS_REG_MASK_OFFSET) +</span><br><span class="line">                 XGPIOPS_INTDIS_OFFSET, <span class="number">0xFFFFFFFF</span>U);</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;主要是通过向<code>INT_DIS</code>(中断失能寄存器(Disable))寄存器写<code>0xFFFFFFFFU</code>来实现，for循环总线循环4次，每次对应每个Bank的<code>INT_DIS</code>寄存器，四个寄存器的名字分别为：</p>
+<ul>
+<li><code>XGPIOPS_INTDIS_OFFS ET</code></li>
+<li><code>INT_DIS_1</code></li>
+<li><code>INT_DIS_2</code></li>
+<li><code>INT_DIS_3</code></li>
+</ul>
+<p>&emsp;&emsp;这个名字可以在手册UG585上查到:</p>
+<p><img src="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201019004256499.png" alt="image-20201019004256499"></p>
+<p>&emsp;&emsp;至此XGpioPs_CfgInitialize函数就分析完了。</p>
+<h2 id="中断初始化"><a href="#中断初始化" class="headerlink" title="中断初始化"></a>中断初始化</h2><p>&emsp;&emsp;终于到今天的主题了，下面好好分析一波。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/***********************************************************************************</span></span><br><span class="line"><span class="comment">定义XScuGic结构体</span></span><br><span class="line"><span class="comment"> **********************************************************************************/</span></span><br><span class="line">XScuGic intc;</span><br><span class="line"><span class="comment">/***********************************************************************************</span></span><br><span class="line"><span class="comment">中断初始化函数</span></span><br><span class="line"><span class="comment"> **********************************************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">setup_interrupt_system</span><span class="params">(XScuGic *gic_ins_ptr,XGpioPs *gpio,<span class="keyword">uint16_t</span> GpioIntrId)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  XScuGic_Config *IntcConfig;</span><br><span class="line">  IntcConfig = XScuGic_LookupConfig(XPAR_SCUGIC_SINGLE_DEVICE_ID);                           <span class="comment">/*获取中断控制器和中断分配器的基地址*/</span></span><br><span class="line">  XScuGic_CfgInitialize(gic_ins_ptr,IntcConfig,IntcConfig-&gt;CpuBaseAddress);                  <span class="comment">/*设置默认中断处理函数,关闭Gic,初始化中断分配器*/</span></span><br><span class="line">  Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,</span><br><span class="line">                               \(Xil_ExceptionHandler)XScuGic_InterruptHandler,gic_ins_ptr); <span class="comment">/*设置IRQ的中断处理函数*/</span></span><br><span class="line">  Xil_ExceptionEnable();                                                                     <span class="comment">/*IRQ使能(通过清除ARM7的CPSR的IRQ中断屏蔽位)*/</span></span><br><span class="line">  XScuGic_Connect(gic_ins_ptr,GpioIntrId,(Xil_ExceptionHandler)intr_handler,(<span class="keyword">void</span> *)gpio);   <span class="comment">/*设置GPIO中断处理函数*/</span></span><br><span class="line">  XScuGic_Enable(gic_ins_ptr, GpioIntrId);                                                   <span class="comment">/*使能Gic*/</span></span><br><span class="line">  XGpioPs_SetIntrTypePin(gpio, <span class="number">11</span>, XGPIOPS_IRQ_TYPE_EDGE_FALLING);                           <span class="comment">/*中断触发类型*/</span></span><br><span class="line">  XGpioPs_IntrEnablePin(gpio, <span class="number">11</span>);                                                           <span class="comment">/*使能GPIO11的中断功能*/</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/***********************************************************************************</span></span><br><span class="line"><span class="comment">在主函数中调用</span></span><br><span class="line"><span class="comment"> **********************************************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*... other code ...*/</span></span><br><span class="line">    setup_interrupt_system(&amp;intc,&amp;Gpio,XPAR_XGPIOPS_0_INTR);     <span class="comment">/*设置中断*/</span></span><br><span class="line">    <span class="comment">/*... other code ...*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;再把中断初始化代码摆一遍，方便查看。</p>
+<h3 id="XScuGic-LookupConfig函数"><a href="#XScuGic-LookupConfig函数" class="headerlink" title="XScuGic_LookupConfig函数"></a>XScuGic_LookupConfig函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * This typedef contains configuration information for the device.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  u16 DeviceId;		<span class="comment">/**&lt; Unique ID  of device */</span></span><br><span class="line">  u32 CpuBaseAddress;	<span class="comment">/**&lt; CPU Interface Register base address */</span></span><br><span class="line">  u32 DistBaseAddress;	<span class="comment">/**&lt; Distributor Register base address */</span></span><br><span class="line">  XScuGic_VectorTableEntry HandlerTable[XSCUGIC_MAX_NUM_INTR_INPUTS];<span class="comment">/**&lt;</span></span><br><span class="line"><span class="comment">				 Vector table of interrupt handlers */</span></span><br><span class="line">&#125; XScuGic_Config;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这个函数和前面的<code>XGpioPs_LookupConfig</code>函数功能类似，不做过多阐述，唯一有一点不同的是，它这个函数获取到的结构体里面的地址有两个，一个中断控制器地址，一个中断分配器地址，上面结构体是通过<code>XScuGic_LookupConfig</code>函数获取到的结构体，可以看到里面有两个地址和一个中断向量表。</p>
+<h3 id="XScuGic-CfgInitialize函数"><a href="#XScuGic-CfgInitialize函数" class="headerlink" title="XScuGic_CfgInitialize函数"></a>XScuGic_CfgInitialize函数</h3><p>&emsp;&emsp;这个函数主要负责：</p>
+<ul>
+<li>如果CPU是CPU1，则判断CPU1是否可用。</li>
+<li>设置默认中断向量表。</li>
+<li>关闭中断控制器。</li>
+<li>初始化中断分配器</li>
+<li>初始化CPU的GIC接口</li>
+</ul>
+<p>下面一步步分析。</p>
+<h4 id="判断CPU1是否可用"><a href="#判断CPU1是否可用" class="headerlink" title="判断CPU1是否可用"></a>判断CPU1是否可用</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> ARMA9</span></span><br><span class="line">  <span class="keyword">if</span> (XPAR_CPU_ID == <span class="number">0x01</span>) &#123;</span><br><span class="line">    Xil_AssertNonvoid((Xil_In32(XPS_EFUSE_BASEADDR</span><br><span class="line">      + EFUSE_STATUS_OFFSET) &amp; EFUSE_STATUS_CPU_MASK) == <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;首先会判断宏<code>ARMA9</code>是否定义，<code>ARMA9</code>就是表示Cortex-A9，这里这个宏是存在的，然后判断CPU ID，这里实际上不会进行判断，这里我们用的CPU是CPU0。就先假设是CPU1吧，如果是CPU1，那么它会读一个寄存器，然后与上<code>EFUSE_STATUS_CPU_MASK</code>，再和0做比较。读的这个寄存器地址实际上是0xF800D010，<code>EFUSE_STATUS_CPU_MASK</code>则是0x80，所以这里是判断地址为0xF800D010寄存器的第7bit是否为0，如果为0则表示正确，否则表示出现错误。</p>
+<p>&emsp;&emsp;这个寄存器的定义我在UG585里面没有找到，但是在xilinx的社区找到了一个回答，可以参考一下。</p>
+<p><img src="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201019235811930.png" alt="image-20201019235811930"></p>
+<p>&emsp;&emsp;即bit7为1表示CPU1被禁用了，为0表示CPU1没有被禁用。另外注意这个寄存器是<font color="red">一次性可编程</font> 的，也就是说如果把这个寄存器的bit7编程为1，那么CPU1就永久被禁用了。</p>
+<h4 id="设置默认中断向量表"><a href="#设置默认中断向量表" class="headerlink" title="设置默认中断向量表"></a>设置默认中断向量表</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (Int_Id = <span class="number">0U</span>; Int_Id &lt; XSCUGIC_MAX_NUM_INTR_INPUTS;Int_Id++) &#123;</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">  * Initalize the handler to point to a stub to handle an</span></span><br><span class="line"><span class="comment">  * interrupt which has not been connected to a handler</span></span><br><span class="line"><span class="comment">  * Only initialize it if the handler is 0 which means it</span></span><br><span class="line"><span class="comment">  * was not initialized statically by the tools/user. Set</span></span><br><span class="line"><span class="comment">  * the callback reference to this instance so that</span></span><br><span class="line"><span class="comment">  * unhandled interrupts can be tracked.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="keyword">if</span> ((InstancePtr-&gt;Config-&gt;HandlerTable[Int_Id].Handler == (Xil_InterruptHandler)<span class="literal">NULL</span>)) &#123;</span><br><span class="line">    InstancePtr-&gt;Config-&gt;HandlerTable[Int_Id].Handler = (Xil_InterruptHandler)StubHandler;</span><br><span class="line">  &#125;</span><br><span class="line">  InstancePtr-&gt;Config-&gt;HandlerTable[Int_Id].CallBackRef = InstancePtr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这段代码用于设置默认中断向量表，这个中断向量表是IRQ中断向量表。这里会将所有为空的中断向量全部替换成默认中断服务函数。</p>
+<h4 id="关闭GIC，初始化中断分配器，初始化CPU中断的一些关键参数"><a href="#关闭GIC，初始化中断分配器，初始化CPU中断的一些关键参数" class="headerlink" title="关闭GIC，初始化中断分配器，初始化CPU中断的一些关键参数"></a>关闭GIC，初始化中断分配器，初始化CPU中断的一些关键参数</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">XScuGic_Stop(InstancePtr);</span><br><span class="line">DistributorInit(InstancePtr, Cpu_Id);</span><br><span class="line">CPUInitialize(InstancePtr);</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;就3个函数，函数内部的代码就不分析了，不影响理解初始化流程。</p>
+<h3 id="Xil-ExceptionRegisterHandler函数"><a href="#Xil-ExceptionRegisterHandler函数" class="headerlink" title="Xil_ExceptionRegisterHandler函数"></a>Xil_ExceptionRegisterHandler函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">XExc_VectorTable[Exception_id].Handler = Handler;</span><br><span class="line">XExc_VectorTable[Exception_id].Data = Data;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;这个函数的代码很简单，功能也很明了，就是为IRQ中断设置中断服务函数。这里中断服务函数被设置为了<code>XScuGic_InterruptHandler</code>。当IRQ中断服务函数发生时，这个函数会从IRQ中断服务向量表中查找对应外设的中断服务函数，然后调用执行。</p>
+<h3 id="Xil-ExceptionEnable函数"><a href="#Xil-ExceptionEnable函数" class="headerlink" title="Xil_ExceptionEnable函数"></a>Xil_ExceptionEnable函数</h3><p>&emsp;&emsp;这个函数通过调用汇编指令，通过清除ARM核的<code>CPSR</code>寄存器的IRQ中断禁止位来打开IRQ中断。</p>
+<h3 id="XScuGic-Connect函数"><a href="#XScuGic-Connect函数" class="headerlink" title="XScuGic_Connect函数"></a>XScuGic_Connect函数</h3><p>&emsp;&emsp;这个函数通过操作IRQ中断向量表来设置指定中断的中断服务函数。</p>
+<h3 id="XScuGic-Enable函数"><a href="#XScuGic-Enable函数" class="headerlink" title="XScuGic_Enable函数"></a>XScuGic_Enable函数</h3><p>&emsp;&emsp;顾名思义，中断使能，这个函数用来使能指定外设的中断。</p>
+<h3 id="XGpioPs-SetIntrTypePin，XGpioPs-IntrEnablePin"><a href="#XGpioPs-SetIntrTypePin，XGpioPs-IntrEnablePin" class="headerlink" title="XGpioPs_SetIntrTypePin，XGpioPs_IntrEnablePin"></a>XGpioPs_SetIntrTypePin，XGpioPs_IntrEnablePin</h3><p>&emsp;&emsp;这两个函数分别用来设置中断触发类型和中断那些引脚使能中断功能。</p>
+<h2 id="总括"><a href="#总括" class="headerlink" title="总括"></a>总括</h2><p>&emsp;&emsp;总结一下吧，我们这里初始化中断，我们会初始化两个中断向量表，一个<strong>系统中断向量表</strong>，<strong>一个IRQ中断向量表</strong>，大致结构就是这样的：</p>
+<p><img src="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201023000604612.png" alt="image-20201023000604612"></p>
+<p>&emsp;&emsp;<strong>当IRQ中断发生时，程序会首先跳转到系统中断中断向量表，系统中断向量表中有跳转指令，会跳转到对应的系统中断服务函数，然后系统中断服务函数则会在根据中断ID(通过GIC的寄存器得到)在IRQ中断向量表中查询各个外设的中断服务函数，并调用执行，从而实现中断功能。</strong></p>
+<p>&emsp;&emsp;系统的启动地址既是系统中断向量表的位置，即系统一启动便是执行复位中断的中断服务函数(不考虑重定位中断向量表)，想想也应该这样，系统只有在复位时才会重启，所以复位后执行的第一条指令应该就是复位中断服务函数，而这7个中断向量实际上是对应着7条跳转指令的，有两个方法可以验证这个想法：</p>
+<p><strong>看源码</strong></p>
+<p>&emsp;&emsp;打开连接文件，可以看到有一个<code>vectors</code>块是在代码最前面的，顾名思义，这就是中断向量所在的块了，并且还加了KEEP指令，防止之这个块被优化掉，说明这个块很重要，这更加验证了这个想法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">.text : &#123;</span><br><span class="line">   KEEP (*(.vectors))</span><br><span class="line">   *(.boot)</span><br><span class="line">   *(.text)</span><br><span class="line">   *(.text.*)</span><br><span class="line">   *(.gnu.linkonce.t.*)</span><br><span class="line">   *(.plt)</span><br><span class="line">   *(.gnu_warning)</span><br><span class="line">   *(.gcc_execpt_table)</span><br><span class="line">   *(.glue_7)</span><br><span class="line">   *(.glue_7t)</span><br><span class="line">   *(.vfp11_veneer)</span><br><span class="line">   *(.ARM.extab)</span><br><span class="line">   *(.gnu.linkonce.armextab.*)</span><br><span class="line">&#125; &gt; ps7_ddr_0</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;再在zynq sdk工程目录下搜索文件内容<code>vectors</code></p>
+<p><img src="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201022233105379.png" alt="image-20201022233105379"></p>
+<p>&emsp;&emsp;可以看到这里定义了一个<code>vector</code>块，打开我们可以看到如下代码：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">.section</span> .vectors</span><br><span class="line"><span class="symbol">_vector_table:</span></span><br><span class="line">  <span class="keyword">B	</span>_boot</span><br><span class="line">  <span class="keyword">B	</span>Undefined</span><br><span class="line">  <span class="keyword">B	</span>SVCHandler</span><br><span class="line">  <span class="keyword">B	</span><span class="keyword">PrefetchAbortHandler</span></span><br><span class="line"><span class="keyword">	</span><span class="keyword">B	</span>DataAbortHandler</span><br><span class="line">  <span class="keyword">NOP	</span><span class="comment">/* Placeholder for address exception vector*/</span></span><br><span class="line">  <span class="keyword">B	</span>IRQHandler</span><br><span class="line">  <span class="keyword">B	</span>FIQHandler</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;没错，就是它了，很明显，7种中断对应7条跳转指令，还有一个<code>NOP</code>指令用来填充保留位置。</p>
+<p><strong>看编译后的汇编文件</strong></p>
+<p>&emsp;&emsp;这个方法更加直接明了了。</p>
+<p><img src="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201022233411273.png" alt="image-20201022233411273"></p>
+<p>&emsp;&emsp;这个0x100000就是我们zynq的启动地址，在链接脚本中我们可以验证。</p>
+<p><img src="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/image-20201022233506439.png" alt="image-20201022233506439"></p>
+<p>&emsp;&emsp;扯远了扯远了，回到正轨，当中断发生后，系统会第一时间跳转到这个向量表，然后通过向量表的跳转指令跳转到各自的中断服务函数，所以当发生IRQ中断时，程序会跳转到<code>IRQHandler</code>中，<code>IRQHandler</code>是一个汇编函数段，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">IRQHandler:          &#x2F;* IRQ vector handler *&#x2F;</span><br><span class="line"></span><br><span class="line">  stmdb  sp!,&#123;r0-r3,r12,lr&#125;    &#x2F;* state save from compiled code*&#x2F;</span><br><span class="line">#if FPU_HARD_FLOAT_ABI_ENABLED</span><br><span class="line">  vpush &#123;d0-d7&#125;</span><br><span class="line">  vpush &#123;d16-d31&#125;</span><br><span class="line">  vmrs r1, FPSCR</span><br><span class="line">  push &#123;r1&#125;</span><br><span class="line">  vmrs r1, FPEXC</span><br><span class="line">  push &#123;r1&#125;</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#ifdef PROFILING</span><br><span class="line">  ldr  r2, &#x3D;prof_pc</span><br><span class="line">  subs  r3, lr, #0</span><br><span class="line">  str  r3, [r2]</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">  bl  IRQInterrupt      &#x2F;* IRQ vector *&#x2F;</span><br><span class="line"></span><br><span class="line">#if FPU_HARD_FLOAT_ABI_ENABLED</span><br><span class="line">  pop   &#123;r1&#125;</span><br><span class="line">  vmsr    FPEXC, r1</span><br><span class="line">  pop   &#123;r1&#125;</span><br><span class="line">  vmsr    FPSCR, r1</span><br><span class="line">  vpop    &#123;d16-d31&#125;</span><br><span class="line">  vpop    &#123;d0-d7&#125;</span><br><span class="line">#endif</span><br><span class="line">  ldmia  sp!,&#123;r0-r3,r12,lr&#125;    &#x2F;* state restore from compiled code *&#x2F;</span><br><span class="line"></span><br><span class="line">  subs  pc, lr, #4      &#x2F;* adjust return *&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;忽略宏定义包含的代码段，有一条<code>bl IRQInterrupt</code>指令，这条指令会跳转到代码段<code>IRQInterrupt</code>，而<code>IRQInterrupt</code>则是<code>verctor.c</code>中定义的一个C语言函数，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">IRQInterrupt</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  XExc_VectorTable[XIL_EXCEPTION_ID_IRQ_INT].Handler(XExc_VectorTable[</span><br><span class="line">          XIL_EXCEPTION_ID_IRQ_INT].Data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;代码很简单，从前面说的系统中断向量表中取出IRQ中断服务函数，然后执行，并且还传入进了一个参数。</p>
+<p>&emsp;&emsp;根据前面的分析，这时候执行的<code>XExc_VectorTable[XIL_EXCEPTION_ID_IRQ_INT]</code>中的函数应该就是<code>XScuGic_InterruptHandler</code>函数，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">/*获取中断ID*/</span></span><br><span class="line">    IntIDFull = XScuGic_CPUReadReg(InstancePtr, XSCUGIC_INT_ACK_OFFSET);</span><br><span class="line">    InterruptID = IntIDFull &amp; XSCUGIC_ACK_INTID_MASK;</span><br><span class="line">    <span class="comment">/*判断中断ID是否大于最大中断ID号*/</span></span><br><span class="line">    <span class="keyword">if</span> (XSCUGIC_MAX_NUM_INTR_INPUTS &lt;= InterruptID) &#123;</span><br><span class="line">        <span class="keyword">goto</span> IntrExit;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*获取外设中断服务函数的函数指针*/</span></span><br><span class="line">    TablePtr = &amp;(InstancePtr-&gt;Config-&gt;HandlerTable[InterruptID]);</span><br><span class="line">    <span class="keyword">if</span> (TablePtr != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">/*执行外设中断服务函数*/</span></span><br><span class="line">        TablePtr-&gt;Handler(TablePtr-&gt;CallBackRef);</span><br><span class="line">    &#125;</span><br><span class="line">IntrExit:</span><br><span class="line">    <span class="comment">/*写中断结束寄存器*/</span></span><br><span class="line">    XScuGic_CPUWriteReg(InstancePtr, XSCUGIC_EOI_OFFSET, IntIDFull);</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;可以看出，<code>XScuGic_InterruptHandler</code>函数实际上就是在IRQ中断向量表中查找对应ID的中断服务函数，然后执行，而这个IRQ中断向量表就是前面GIC结构体中的那个向量表。</p>
+<p>&emsp;&emsp;至此，ZYNQ的GPIO中断初始化过程分析就完成了，撒花。</p>
+<h1 id="完"><a href="#完" class="headerlink" title="完"></a>完</h1>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    TangFeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/" title="ZYNQ中断初始化程序分析">https://www.xiaobaidreamworks.com/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ZYNQ/" rel="tag"># ZYNQ</a>
+          
+            <a href="/tags/FPGA/" rel="tag"># FPGA</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/10/18/WPF%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="next" title="WPF学习记录">
+                <i class="fa fa-chevron-left"></i> WPF学习记录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/01.png"
+                alt="TangFeng" />
+            
+              <p class="site-author-name" itemprop="name">TangFeng</p>
+              <p class="site-description motion-element" itemprop="description">做一颗星星，发出自己的光</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ARF1939261764" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                别处再看看吧
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://fabian4.gitee.io" title="小丁的个人博客" target="_blank">小丁的个人博客</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.alxawatcher.cn" title="西西的个人博客" target="_blank">西西的个人博客</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#整体代码"><span class="nav-number">1.</span> <span class="nav-text">整体代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GPIO初始化"><span class="nav-number">2.1.</span> <span class="nav-text">GPIO初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XGpioPs-Config结构体"><span class="nav-number">2.1.1.</span> <span class="nav-text">XGpioPs_Config结构体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XGpioPs-LookupConfig函数"><span class="nav-number">2.1.2.</span> <span class="nav-text">XGpioPs_LookupConfig函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XGpioPs-CfgInitialize函数"><span class="nav-number">2.1.3.</span> <span class="nav-text">XGpioPs_CfgInitialize函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中断初始化"><span class="nav-number">2.2.</span> <span class="nav-text">中断初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XScuGic-LookupConfig函数"><span class="nav-number">2.2.1.</span> <span class="nav-text">XScuGic_LookupConfig函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XScuGic-CfgInitialize函数"><span class="nav-number">2.2.2.</span> <span class="nav-text">XScuGic_CfgInitialize函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#判断CPU1是否可用"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">判断CPU1是否可用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置默认中断向量表"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">设置默认中断向量表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关闭GIC，初始化中断分配器，初始化CPU中断的一些关键参数"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">关闭GIC，初始化中断分配器，初始化CPU中断的一些关键参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Xil-ExceptionRegisterHandler函数"><span class="nav-number">2.2.3.</span> <span class="nav-text">Xil_ExceptionRegisterHandler函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Xil-ExceptionEnable函数"><span class="nav-number">2.2.4.</span> <span class="nav-text">Xil_ExceptionEnable函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XScuGic-Connect函数"><span class="nav-number">2.2.5.</span> <span class="nav-text">XScuGic_Connect函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XScuGic-Enable函数"><span class="nav-number">2.2.6.</span> <span class="nav-text">XScuGic_Enable函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XGpioPs-SetIntrTypePin，XGpioPs-IntrEnablePin"><span class="nav-number">2.2.7.</span> <span class="nav-text">XGpioPs_SetIntrTypePin，XGpioPs_IntrEnablePin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总括"><span class="nav-number">2.3.</span> <span class="nav-text">总括</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#完"><span class="nav-number">3.</span> <span class="nav-text">完</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">TangFeng</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">12.6k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'QxbMTAK28kbaBY3dBWr9ujmt-gzGzoHsz',
+        appKey: 'KeSGJG38hc1QIDBA0W3noqbD',
+        placeholder: '留下你的想法',
+        avatar:'mp',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("QxbMTAK28kbaBY3dBWr9ujmt-gzGzoHsz", "KeSGJG38hc1QIDBA0W3noqbD");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

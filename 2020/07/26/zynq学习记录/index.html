@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ZYNQ,FPGA," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;开始学习ZYNQ，加油。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zynq学习记录">
+<meta property="og:url" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="小唐的小窝">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;开始学习ZYNQ，加油。">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/70171811_p0.jpg">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726011516555.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012028674.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012044376.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012116630.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012358194.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012625377.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012703131.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012803852.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012825134.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012933883.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013006927.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013052723.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013119176.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013136934.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013154065.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013250851.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20201010002827973.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20201010003001674.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20201010003120035.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20201010003405404.png">
+<meta property="article:published_time" content="2020-07-25T17:06:18.000Z">
+<meta property="article:modified_time" content="2020-10-13T14:15:35.348Z">
+<meta property="article:author" content="TangFeng">
+<meta property="article:tag" content="ZYNQ">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/70171811_p0.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.xiaobaidreamworks.com/2020/07/26/zynq学习记录/"/>
+
+
+
+
+
+  <title>zynq学习记录 | 小唐的小窝</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小唐的小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">认认真真咯</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="TangFeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/01.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小唐的小窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">zynq学习记录</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-26T01:06:18+08:00">
+                2020-07-26
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-10-13T22:15:35+08:00">
+                2020-10-13
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA/ZYNQ/" itemprop="url" rel="index">
+                    <span itemprop="name">ZYNQ</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="leancloud_visitors" data-flag-title="zynq学习记录">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  592
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;开始学习ZYNQ，加油。</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/70171811_p0.jpg" alt="70171811_p0"></p>
+<a id="more"></a>
+
+<hr>
+<h1 id="点亮第一个LED"><a href="#点亮第一个LED" class="headerlink" title="点亮第一个LED"></a>点亮第一个LED</h1><p>&emsp;&emsp;开始学习xilinx FPGA及ZYNQ的使用，记录第一步：hello world与点亮第一个led灯;</p>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><h3 id="新建工程"><a href="#新建工程" class="headerlink" title="新建工程"></a>新建工程</h3><p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726011516555.png" alt="image-20200726011516555"></p>
+<h3 id="点击Create-Block-Design"><a href="#点击Create-Block-Design" class="headerlink" title="点击Create Block Design"></a>点击<strong>Create Block Design</strong></h3><p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02.png" alt="02"></p>
+<h3 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h3><p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012028674.png" alt="image-20200726012028674"></p>
+<h3 id="添加CPU"><a href="#添加CPU" class="headerlink" title="添加CPU"></a>添加CPU</h3><p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012044376.png" alt="image-20200726012044376"></p>
+<h3 id="设置CPU"><a href="#设置CPU" class="headerlink" title="设置CPU"></a>设置CPU</h3><p>&emsp;&emsp;将<strong>PS-PL Configuraltion -&gt; AXI Non Secure Enablement -&gt; GP Master AXI Interface -&gt; M AXI GP0 Interface</strong>取消勾选。</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012116630.png" alt="image-20200726012116630"></p>
+<p>&emsp;&emsp;勾选<strong>UART1</strong>和<strong>GPIO MIO</strong>，注意<strong>UART1</strong>的位置。</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012358194.png" alt="image-20200726012358194"></p>
+<p>然后设置DDR</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012625377.png" alt="image-20200726012625377"></p>
+<p>确认保存后点击Run Block Automation</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012703131.png" alt="image-20200726012703131"></p>
+<p>弹出来的对话框确认即可</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012803852.png" alt="image-20200726012803852"></p>
+<h3 id="生成HDL-Wrapper"><a href="#生成HDL-Wrapper" class="headerlink" title="生成HDL Wrapper"></a>生成HDL Wrapper</h3><p>点击Create HDL Wrapper</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012825134.png" alt="image-20200726012825134"></p>
+<p>生成完后源文件结构会变成如下结构，多了个包装。</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726012933883.png" alt="image-20200726012933883"></p>
+<p>然后右击cpu点击Generate Output Proudcts</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013006927.png" alt="image-20200726013006927"></p>
+<p>然后导出Hardware</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013052723.png" alt="image-20200726013052723"></p>
+<h3 id="运行SDK"><a href="#运行SDK" class="headerlink" title="运行SDK"></a>运行SDK</h3><p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013119176.png" alt="image-20200726013119176"></p>
+<p>打开后的界面，设置终端连接</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013136934.png" alt="image-20200726013136934"></p>
+<h3 id="运行Hello-world"><a href="#运行Hello-world" class="headerlink" title="运行Hello world"></a>运行Hello world</h3><p>点击运行，终端出现<code>Hello World</code>。</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013154065.png" alt="image-20200726013154065"></p>
+<h3 id="LED测试"><a href="#LED测试" class="headerlink" title="LED测试"></a>LED测试</h3><p>将代码替换如下：</p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20200726013250851.png" alt="image-20200726013250851"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"platform.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xil_printf.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xparameters.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xgpiops.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xstatus.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xplatform_info.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"sleep.h"</span></span></span><br><span class="line"></span><br><span class="line">XGpioPs Gpio;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GPIO_DEVICE_ID		XPAR_XGPIOPS_0_DEVICE_ID</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    XGpioPs_Config *ConfigPtr;<span class="comment">/*GPIO配置结构体,用于存放GPIO外设的设备ID和设备基地址*/</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"Hello World\n\r"</span>);<span class="comment">/*打印一个hello world*/</span></span><br><span class="line">    ConfigPtr = XGpioPs_LookupConfig(GPIO_DEVICE_ID);<span class="comment">/*根据设备ID寻找设备寄存器基地址*/</span></span><br><span class="line">    XGpioPs_CfgInitialize(&amp;Gpio,ConfigPtr,ConfigPtr-&gt;BaseAddr);<span class="comment">/*初始化外设*/</span></span><br><span class="line">    XGpioPs_SetDirectionPin(&amp;Gpio, <span class="number">9</span>, <span class="number">1</span>);<span class="comment">/*IO设置为输出*/</span></span><br><span class="line">    XGpioPs_SetOutputEnablePin(&amp;Gpio, <span class="number">9</span>, <span class="number">1</span>);<span class="comment">/*输出使能*/</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    	 XGpioPs_WritePin(&amp;Gpio, <span class="number">9</span>, <span class="number">0x0</span>);</span><br><span class="line">    	 usleep(<span class="number">100000</span>);</span><br><span class="line">    	 XGpioPs_WritePin(&amp;Gpio, <span class="number">9</span>, <span class="number">0x1</span>);</span><br><span class="line">     usleep(<span class="number">100000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下载即可看到IO灯在闪(注意IO分配)。</p>
+<hr>
+<h1 id="EMIO的使用"><a href="#EMIO的使用" class="headerlink" title="EMIO的使用"></a>EMIO的使用</h1><p>&emsp;&emsp;emio是ZYNQ连接到PL内部的一些IO，这些IO既可以连接到PL逻辑内部，供PS-PL之间传递信息使用，也可以由PL端直接旁路到PL的IO端，作为普通IO使用。</p>
+<h2 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤"></a>步骤</h2><p>&emsp;&emsp;在点亮led工程的基础上，做如下操作即可：</p>
+<h3 id="勾选EMIO，并设置宽带"><a href="#勾选EMIO，并设置宽带" class="headerlink" title="勾选EMIO，并设置宽带"></a>勾选EMIO，并设置宽带</h3><p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20201010002827973.png" alt="image-20201010002827973"></p>
+<h3 id="右键新添加的GPIO端口，并选择Make-External选项"><a href="#右键新添加的GPIO端口，并选择Make-External选项" class="headerlink" title="右键新添加的GPIO端口，并选择Make External选项"></a>右键新添加的GPIO端口，并选择<code>Make External</code>选项</h3><p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20201010003001674.png" alt="image-20201010003001674"></p>
+<p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20201010003120035.png" alt="image-20201010003120035"></p>
+<h3 id="然后重新生成wrapper和output-product"><a href="#然后重新生成wrapper和output-product" class="headerlink" title="然后重新生成wrapper和output product"></a>然后重新生成<code>wrapper</code>和<code>output product</code></h3><h3 id="运行一下综合后点击Schematic，给新增加的GPIO分配管脚"><a href="#运行一下综合后点击Schematic，给新增加的GPIO分配管脚" class="headerlink" title="运行一下综合后点击Schematic，给新增加的GPIO分配管脚"></a>运行一下综合后点击<code>Schematic</code>，给新增加的GPIO分配管脚</h3><p><img src="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/image-20201010003405404.png" alt="image-20201010003405404"></p>
+<h3 id="然后重新导出硬件"><a href="#然后重新导出硬件" class="headerlink" title="然后重新导出硬件"></a>然后重新导出硬件</h3><p>&emsp;&emsp;软件测试代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"platform.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xil_printf.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xgpiops.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"xparameters.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"sleep.h"</span></span></span><br><span class="line"></span><br><span class="line">XGpioPs Gpio;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    XGpioPs_Config* xgps_Config;</span><br><span class="line">    </span><br><span class="line">    init_platform();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"Hello World\n\r"</span>);</span><br><span class="line"></span><br><span class="line">    xgps_Config = XGpioPs_LookupConfig(XPAR_XGPIOPS_0_DEVICE_ID);</span><br><span class="line"></span><br><span class="line">    XGpioPs_CfgInitialize(&amp;Gpio,xgps_Config,xgps_Config-&gt;BaseAddr);</span><br><span class="line"></span><br><span class="line">    XGpioPs_SetDirectionPin(&amp;Gpio,<span class="number">9</span>,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    XGpioPs_SetDirectionPin(&amp;Gpio,<span class="number">54</span>,<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    XGpioPs_SetOutputEnablePin(&amp;Gpio,<span class="number">9</span>,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    	XGpioPs_WritePin(&amp;Gpio,<span class="number">9</span>,XGpioPs_ReadPin(&amp;Gpio,<span class="number">54</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cleanup_platform();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和mio的使用类似。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    TangFeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" title="zynq学习记录">https://www.xiaobaidreamworks.com/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ZYNQ/" rel="tag"># ZYNQ</a>
+          
+            <a href="/tags/FPGA/" rel="tag"># FPGA</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/30/avl%E6%80%BB%E7%BA%BF%E6%A0%87%E5%87%86%E5%8F%8A%E6%80%BB%E7%BA%BF%E6%8E%A7%E5%88%B6%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1/" rel="next" title="avl总线标准及总线控制器的设计">
+                <i class="fa fa-chevron-left"></i> avl总线标准及总线控制器的设计
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/10/18/WPF%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="prev" title="WPF学习记录">
+                WPF学习记录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/01.png"
+                alt="TangFeng" />
+            
+              <p class="site-author-name" itemprop="name">TangFeng</p>
+              <p class="site-description motion-element" itemprop="description">做一颗星星，发出自己的光</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ARF1939261764" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                别处再看看吧
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://fabian4.gitee.io" title="小丁的个人博客" target="_blank">小丁的个人博客</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.alxawatcher.cn" title="西西的个人博客" target="_blank">西西的个人博客</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#点亮第一个LED"><span class="nav-number">1.</span> <span class="nav-text">点亮第一个LED</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#步骤"><span class="nav-number">1.1.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#新建工程"><span class="nav-number">1.1.1.</span> <span class="nav-text">新建工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#点击Create-Block-Design"><span class="nav-number">1.1.2.</span> <span class="nav-text">点击Create Block Design</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命名"><span class="nav-number">1.1.3.</span> <span class="nav-text">命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加CPU"><span class="nav-number">1.1.4.</span> <span class="nav-text">添加CPU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置CPU"><span class="nav-number">1.1.5.</span> <span class="nav-text">设置CPU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成HDL-Wrapper"><span class="nav-number">1.1.6.</span> <span class="nav-text">生成HDL Wrapper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行SDK"><span class="nav-number">1.1.7.</span> <span class="nav-text">运行SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行Hello-world"><span class="nav-number">1.1.8.</span> <span class="nav-text">运行Hello world</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LED测试"><span class="nav-number">1.1.9.</span> <span class="nav-text">LED测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#EMIO的使用"><span class="nav-number">2.</span> <span class="nav-text">EMIO的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#步骤-1"><span class="nav-number">2.1.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#勾选EMIO，并设置宽带"><span class="nav-number">2.1.1.</span> <span class="nav-text">勾选EMIO，并设置宽带</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#右键新添加的GPIO端口，并选择Make-External选项"><span class="nav-number">2.1.2.</span> <span class="nav-text">右键新添加的GPIO端口，并选择Make External选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#然后重新生成wrapper和output-product"><span class="nav-number">2.1.3.</span> <span class="nav-text">然后重新生成wrapper和output product</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行一下综合后点击Schematic，给新增加的GPIO分配管脚"><span class="nav-number">2.1.4.</span> <span class="nav-text">运行一下综合后点击Schematic，给新增加的GPIO分配管脚</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#然后重新导出硬件"><span class="nav-number">2.1.5.</span> <span class="nav-text">然后重新导出硬件</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">TangFeng</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">12.6k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'QxbMTAK28kbaBY3dBWr9ujmt-gzGzoHsz',
+        appKey: 'KeSGJG38hc1QIDBA0W3noqbD',
+        placeholder: '留下你的想法',
+        avatar:'mp',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("QxbMTAK28kbaBY3dBWr9ujmt-gzGzoHsz", "KeSGJG38hc1QIDBA0W3noqbD");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
