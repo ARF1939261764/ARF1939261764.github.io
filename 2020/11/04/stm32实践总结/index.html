@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="嵌入式,GD32,总结," />
 
 
 
@@ -79,14 +79,23 @@
 
 
 
-<meta name="description" content="做一颗星星，发出自己的光">
-<meta property="og:type" content="website">
-<meta property="og:title" content="小唐的小窝">
-<meta property="og:url" content="https://www.xiaobaidreamworks.com/categories/FPGA/index.html">
+<meta name="description" content="&amp;emsp;&amp;emsp;最近公司让做了一个项目，用GD32完成上位机与下游板卡之间的协议转换，比较常规的一次任务，但还是涉及到了很多以前没有接触、没有注意到的东西，导致出了一些问题，这里分析记录一下，避免以后继续踩坑。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stm32实践总结">
+<meta property="og:url" content="https://www.xiaobaidreamworks.com/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="小唐的小窝">
-<meta property="og:description" content="做一颗星星，发出自己的光">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;最近公司让做了一个项目，用GD32完成上位机与下游板卡之间的协议转换，比较常规的一次任务，但还是涉及到了很多以前没有接触、没有注意到的东西，导致出了一些问题，这里分析记录一下，避免以后继续踩坑。">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/19931492_p0.jpg">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/image-20201104224926979.png">
+<meta property="og:image" content="https://www.xiaobaidreamworks.com/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/image-20201104224944057.png">
+<meta property="article:published_time" content="2020-11-04T14:06:44.000Z">
+<meta property="article:modified_time" content="2020-11-04T15:24:30.063Z">
 <meta property="article:author" content="TangFeng">
+<meta property="article:tag" content="嵌入式">
+<meta property="article:tag" content="GD32">
+<meta property="article:tag" content="总结">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.xiaobaidreamworks.com/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/19931492_p0.jpg">
 
 
 
@@ -116,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="https://www.xiaobaidreamworks.com/categories/FPGA/"/>
+  <link rel="canonical" href="https://www.xiaobaidreamworks.com/2020/11/04/stm32实践总结/"/>
 
 
 
 
 
-  <title>分类: FPGA | 小唐的小窝</title>
+  <title>stm32实践总结 | 小唐的小窝</title>
   
 
 
@@ -141,7 +150,7 @@
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -245,139 +254,268 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block category">
-
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>FPGA<small>分类</small>
-        </h1>
-      </div>
-
-      
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.xiaobaidreamworks.com/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="TangFeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/01.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小唐的小窝">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/" itemprop="url">
-              
-                <span itemprop="name">ZYNQ中断初始化程序分析</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">stm32实践总结</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-10-18T19:59:20+08:00"
-              content="2020-10-18" >
-          10-18
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-04T22:06:44+08:00">
+                2020-11-04
+              </time>
+            
 
-    </header>
-  </article>
+            
+              <span class="post-meta-divider">|</span>
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2020-11-04T23:24:30+08:00">
+                2020-11-04
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/" itemprop="url" rel="index">
+                    <span itemprop="name">嵌入式</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/" itemprop="url" rel="index">
+                    <span itemprop="name">经验总结</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/" class="leancloud_visitors" data-flag-title="stm32实践总结">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  685
+                </span>
+              
+
+              
+
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2020/07/26/zynq%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="url">
-              
-                <span itemprop="name">zynq学习记录</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-07-26T01:06:18+08:00"
-              content="2020-07-26" >
-          07-26
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
+        <p>&emsp;&emsp;最近公司让做了一个项目，用GD32完成上位机与下游板卡之间的协议转换，比较常规的一次任务，但还是涉及到了很多以前没有接触、没有注意到的东西，导致出了一些问题，这里分析记录一下，避免以后继续踩坑。</p>
+<p><img src="/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/19931492_p0.jpg" alt="19931492_p0"></p>
+<a id="more"></a>
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2020/06/30/avl%E6%80%BB%E7%BA%BF%E6%A0%87%E5%87%86%E5%8F%8A%E6%80%BB%E7%BA%BF%E6%8E%A7%E5%88%B6%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1/" itemprop="url">
-              
-                <span itemprop="name">avl总线标准及总线控制器的设计</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-06-30T23:37:58+08:00"
-              content="2020-06-30" >
-          06-30
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2020/06/29/ov5640-hdmi%E6%98%BE%E7%A4%BA%E6%80%BB%E7%BB%93/" itemprop="url">
-              
-                <span itemprop="name">ov5640-hdmi显示总结</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-06-29T13:06:05+08:00"
-              content="2020-06-29" >
-          06-29
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+<h1 id="关中断指令需要注意的地方"><a href="#关中断指令需要注意的地方" class="headerlink" title="关中断指令需要注意的地方"></a>关中断指令需要注意的地方</h1><p>&emsp;&emsp;这个是这次遇到的问题里最让我映射深刻的了。</p>
+<p>&emsp;&emsp;<strong>在Cortex-M3/M4内核的单片机中，关中断指令需要2个时钟周期才会生效。</strong></p>
+<p>&emsp;&emsp;官方解释如下：</p>
+<p><img src="/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/image-20201104224926979.png" alt="image-20201104224926979"></p>
+<p>&emsp;&emsp;给的例子：</p>
+<p><img src="/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/image-20201104224944057.png" alt="image-20201104224944057"></p>
+<p>&emsp;&emsp;一般情况下，这个特性是不影响效果的，但是对于一些特殊情况，这个会导致出一些问题，比如这次用fifo来缓冲串口接收的数据，结果因为这个特性，导致fifo中断count变量被异常修改，导致数据丢失，或者像上面的例子修改中断向量表，也需要等中断彻底关闭才能进行。</p>
+<p>&emsp;&emsp;还有一种情况，关中断指令是封装到一个函数里面的，这个函数只进行关中断操作，这时候就会出现一种更让人头疼的问题，不开优化程序啥事没有，开了优化就GG，因为C语言调用函数有一个出栈入栈的过程，不开优化的时候，这个过程会被保留，出栈指令的执行往往需要n个时钟周期，所以不经意间规避了这个影响，但是开了优化后，由于关中断函数往往很简单，就一条指令，编译器往往就直接把出栈、入栈过程省略了，甚至直接内联了，这样要是接着立马修改一个需要互斥的变量，就GG了。</p>
+<p>&emsp;&emsp;要怎样解决这个问题呢？加两条存储器屏障指令就好，在Keil中就是<code>__DSB()</code>和<code>__ISB</code>，确保指令执行完成，其实加一条<code>__DSB()</code>就好。更详细的内容请看ARM介绍存储器屏障指令的文档：<a href="/download/DAI0321A_programming_guide_memory_barriers_for_m_profile.pdf">《DAI0321A_programming_guide_memory_barriers_for_m_profile.pdf》</a></p>
+<p>&emsp;&emsp;为啥会要过两个时钟周期才生效呢？流水线嘛，总线的流水，控制信号的流水，都会导致控制有延迟，记得毕设做RISC-V是，在处理CPSR和一些外设的寄存器读写的时候，也纠结过这个问题，这下算是明白存储器屏障指令的作用了。 </p>
+<p>&emsp;&emsp;处理对NVIC的关中断的操作会有延迟，各个外设的中断失能也会有延时，这个需要注意一下。</p>
+<h1 id="Bootloader怎么做"><a href="#Bootloader怎么做" class="headerlink" title="Bootloader怎么做"></a>Bootloader怎么做</h1>
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    TangFeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.xiaobaidreamworks.com/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/" title="stm32实践总结">https://www.xiaobaidreamworks.com/2020/11/04/stm32%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" rel="tag"># 嵌入式</a>
+          
+            <a href="/tags/GD32/" rel="tag"># GD32</a>
+          
+            <a href="/tags/%E6%80%BB%E7%BB%93/" rel="tag"># 总结</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/10/18/ZYNQ%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/" rel="next" title="ZYNQ中断初始化程序分析">
+                <i class="fa fa-chevron-left"></i> ZYNQ中断初始化程序分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -385,6 +523,13 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
 
         </div>
         
@@ -405,8 +550,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -498,6 +652,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关中断指令需要注意的地方"><span class="nav-number">1.</span> <span class="nav-text">关中断指令需要注意的地方</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bootloader怎么做"><span class="nav-number">2.</span> <span class="nav-text">Bootloader怎么做</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -647,6 +817,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
